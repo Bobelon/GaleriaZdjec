@@ -1,30 +1,49 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
 
-//using namespace cv;
+using namespace cv;
+using namespace std;
 
 int main( int argc, char** argv ) {
-	double w,h,fps;
-	bool continueCapture = true;
-	cv::namedWindow( "Okienko Prawie Inteligentne", CV_WINDOW_AUTOSIZE );
-	// Tu zagadka dla Ciebie :)
-	// cv::VideoCapture cap( "dlugopis.mp4" );
-	 cv::VideoCapture cap(0);
-	if ( !cap.isOpened() ) return -1;
-	w = cap.get( CV_CAP_PROP_FRAME_WIDTH ); //get the width of frames of the video
-	h = cap.get( CV_CAP_PROP_FRAME_HEIGHT ); //get the height of frames of the video
-	fps = cap.get( CV_CAP_PROP_FPS ); // ile mamy klatek na sekunde?
-	std::cout << "Parametry wideo : " << w << " x " << h << " @ " << fps << " fps"<< std::endl;
-	if ( fps < 0 ) fps = 30; // tak na wszelki wypadek :)
-	while( continueCapture ) {
+	
+	double width;
+	double height;
+	double fps;
+	
+	namedWindow( "Wspaniała galeria zdjęć", CV_WINDOW_AUTOSIZE ); // Tworzenie nowego okna
+	VideoCapture cap(0);
+	
+	// Błąd dostępu do kamerki
+	if (!cap.isOpened())
+		return -1;
+	
+	// Pobieranie parametrów obrazka
+	width = cap.get (CV_CAP_PROP_FRAME_WIDTH);
+	height = cap.get (CV_CAP_PROP_FRAME_HEIGHT);
+	fps = cap.get (CV_CAP_PROP_FPS);
+	
+	// Mało ważna informacja w terminalu
+	cout << "Parametry wideo : " << width<< " x " << height << " @ " << fps << " fps"<< endl;
+	
+	if (fps < 0)
+		fps = 30; // Tak na wszelki wypadek :)
+		
+		
+		
+	// Główna pętla programu
+	while(true) {
 		int key;
-		cv::Mat frame;
-// 		cap >> frame; -- mozna tak, jesli wiemy ze nie bedzdie bledow
-		if ( cap.read( frame ) ) {
-			cv::imshow( "Okienko Prawie Inteligentne", frame );
-		} else continueCapture = false;
-		//czekaj na klawisz, sprawdz czy to jest 'esc'
-		if( cv::waitKey( 1000.0/fps ) == 1048603 ) continueCapture = false;
+		Mat frame;
+		
+		if (cap.read(frame)) {
+			imshow( "Wspaniała galeria zdjęć", frame );
+		}
+		else
+			break;
+		
+		// Czekaj na klawisz, jeżeli jest to 'esc' to kończ pracę
+		if(waitKey(1000.0/fps) == 1048603)
+			break;
 	}
 	return 0;
 }
