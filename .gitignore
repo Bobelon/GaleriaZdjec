@@ -1,0 +1,7 @@
+*.jpg
+*.txt
+Makefile
+*.cmake
+CMakeFiles/
+Galeria
+*.cpp~
