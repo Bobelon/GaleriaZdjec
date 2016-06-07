@@ -60,7 +60,13 @@ int main( int argc, char** argv ) {
 		if (cap.read(frame)) {
 			//cvtColor( frame, frame, CV_RGB2HSV); // filtr zmieniający skalę barw
 			flip(frame, frame, 1); // Odbicie lustrzane
-			inRange (frame, Scalar (70, 110, 60), Scalar (120, 160, 105), frame2);
+			//inRange (frame, Scalar (75, 115, 65), Scalar (177, 233, 134), frame2);
+			inRange (frame, Scalar (80, 120, 63), Scalar (120, 240, 83), frame2);
+			dilate(frame2, frame2, getStructuringElement(MORPH_ELLIPSE, Size(20, 20)) );
+			erode(frame2, frame2, getStructuringElement(MORPH_ELLIPSE, Size(20, 20)) );
+			dilate(frame2, frame2, getStructuringElement(MORPH_ELLIPSE, Size(20, 50)) );
+			
+			dilate(frame2, frame2, getStructuringElement(MORPH_ELLIPSE, Size(20, 50)) );
 			imshow ("Wspaniała galeria zdjęć", frame2);
 			imshow ("Testowe", frame);
 		}
