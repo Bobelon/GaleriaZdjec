@@ -1,14 +1,34 @@
 #include <stdio.h>
+#include <dirent.h>
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
 using namespace std;
+
+/* Funkcka files zapożyczona z 
+ * http://cpp0x.pl/artykuly/?id=53
+ * */
+void files (const char * dirPath ) {
+    struct dirent * file;
+    DIR * path;
+   
+    if (path = opendir (dirPath)) {
+        while (file = readdir (path))
+             puts (file -> d_name);
+       
+        closedir( path );
+    }
+    else
+         cout << "Nieprawidlowa sciezka" << endl;
+}
 
 int main( int argc, char** argv ) {
 	
 	double width;
 	double height;
 	double fps;
+	
+	files (".");
 	
 	namedWindow( "Wspaniała galeria zdjęć", CV_WINDOW_AUTOSIZE ); // Tworzenie nowego okna
 	VideoCapture cap(0);
@@ -34,11 +54,11 @@ int main( int argc, char** argv ) {
 	while(true) {
 		int key;
 		Mat frame;
-		Mat frame2 = frame;
 		
 		if (cap.read(frame)) {
 			cvtColor( frame, frame, CV_RGB2HSV); // filtr zmieniający skalę barw
 			flip(frame, frame, 1); // Odbicie lustrzane
+			inRange (frame, Scalar (197, 243, 118), Scalar (166, 238, 44), frame);
 			imshow( "Wspaniała galeria zdjęć", frame );
 		}
 		else
