@@ -28,9 +28,10 @@ int main( int argc, char** argv ) {
 	double height;
 	double fps;
 	
-	files (".");
+	//files (".");
 	
-	namedWindow( "Wspaniała galeria zdjęć", CV_WINDOW_AUTOSIZE ); // Tworzenie nowego okna
+	namedWindow ("Wspaniała galeria zdjęć", CV_WINDOW_AUTOSIZE); // Tworzenie nowego okna
+	namedWindow ("Testowe",  CV_WINDOW_AUTOSIZE);
 	VideoCapture cap(0);
 	
 	// Błąd dostępu do kamerki
@@ -54,12 +55,14 @@ int main( int argc, char** argv ) {
 	while(true) {
 		int key;
 		Mat frame;
+		Mat frame2;
 		
 		if (cap.read(frame)) {
-			cvtColor( frame, frame, CV_RGB2HSV); // filtr zmieniający skalę barw
+			//cvtColor( frame, frame, CV_RGB2HSV); // filtr zmieniający skalę barw
 			flip(frame, frame, 1); // Odbicie lustrzane
-			inRange (frame, Scalar (197, 243, 118), Scalar (166, 238, 44), frame);
-			imshow( "Wspaniała galeria zdjęć", frame );
+			inRange (frame, Scalar (70, 110, 60), Scalar (120, 160, 105), frame2);
+			imshow ("Wspaniała galeria zdjęć", frame2);
+			imshow ("Testowe", frame);
 		}
 		else
 			break;
