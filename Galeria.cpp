@@ -34,8 +34,11 @@ int main( int argc, char** argv ) {
 	while(true) {
 		int key;
 		Mat frame;
+		Mat frame2 = frame;
 		
 		if (cap.read(frame)) {
+			cvtColor( frame, frame, CV_RGB2HSV); // filtr zmieniający skalę barw
+			flip(frame, frame, 1); // Odbicie lustrzane
 			imshow( "Wspaniała galeria zdjęć", frame );
 		}
 		else
