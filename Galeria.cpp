@@ -54,21 +54,28 @@ int main( int argc, char** argv ) {
 	// Główna pętla programu
 	while(true) {
 		int key;
-		Mat frame;
+		Mat bgr, hsv, mirror, colorDetection, frame;
 		Mat frame2;
 		
-		if (cap.read(frame)) {
-			//cvtColor( frame, frame, CV_RGB2HSV); // filtr zmieniający skalę barw
-			flip(frame, frame, 1); // Odbicie lustrzane
-			//inRange (frame, Scalar (75, 115, 65), Scalar (177, 233, 134), frame2);
-			inRange (frame, Scalar (80, 120, 63), Scalar (120, 240, 83), frame2);
-			dilate(frame2, frame2, getStructuringElement(MORPH_ELLIPSE, Size(20, 20)) );
-			erode(frame2, frame2, getStructuringElement(MORPH_ELLIPSE, Size(20, 20)) );
-			dilate(frame2, frame2, getStructuringElement(MORPH_ELLIPSE, Size(20, 50)) );
+		if (cap.read(bgr)) {
+			cvtColor( bgr, hsv, CV_BGR2HSV); // filtr zmieniający skalę barw
+			flip(hsv, mirror, 1); // Odbicie lustrzane
+			//blur( frame, frame, Size(10,10) );
+			//blur( frame, frame, Size(10,10) );
+			//erode(frame, frame, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)) );
+			//dilate(frame, frame, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)) );
+			inRange (mirror, Scalar (60, 200, 130), Scalar (100, 255, 255), colorDetection);
+			//inRange (frame, Scalar (80, 120, 63), Scalar (120, 240, 83), frame2);
+			//inRange (frame, Scalar (0, 100, 100), Scalar (55, 255, 200), frame2);
+			dilate(colorDetection, colorDetection, getStructuringElement(MORPH_ELLIPSE, Size(20, 20)) );
+			erode(colorDetection, colorDetection, getStructuringElement(MORPH_ELLIPSE, Size(20, 20)) );
+			dilate(colorDetection, colorDetection, getStructuringElement(MORPH_ELLIPSE, Size(20, 50)) );
+			dilate(colorDetection, colorDetection, getStructuringElement(MORPH_ELLIPSE, Size(20, 50)) );
 			
-			dilate(frame2, frame2, getStructuringElement(MORPH_ELLIPSE, Size(20, 50)) );
-			imshow ("Wspaniała galeria zdjęć", frame2);
-			imshow ("Testowe", frame);
+			//Canny( frame2, frame, 3, 3*2, 3 );
+			//findContours( frame, frame, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+			imshow ("Wspaniała galeria zdjęć", colorDetection);
+			imshow ("Testowe", mirror);
 		}
 		else
 			break;
