@@ -31,7 +31,7 @@ int main( int argc, char** argv ) {
 	//files (".");
 	
 	namedWindow ("Wspaniała galeria zdjęć", CV_WINDOW_AUTOSIZE); // Tworzenie nowego okna
-	namedWindow ("Testowe",  CV_WINDOW_AUTOSIZE);
+	//namedWindow ("Testowe",  CV_WINDOW_AUTOSIZE);
 	VideoCapture cap(0);
 	
 	// Błąd dostępu do kamerki
@@ -54,13 +54,14 @@ int main( int argc, char** argv ) {
 	// Główna pętla programu
 	while(true) {
 		int key;
-		Mat bgr, hsv, mirror, colorDetection, frame;
+		Mat bgr, hsv, mirror, colorDetection, countour, frame;
 		Mat frame2;
 		
 		if (cap.read(bgr)) {
+			//blur( bgr, bgr, Size(10,10) );
 			cvtColor( bgr, hsv, CV_BGR2HSV); // filtr zmieniający skalę barw
 			flip(hsv, mirror, 1); // Odbicie lustrzane
-			//blur( frame, frame, Size(10,10) );
+			//
 			//blur( frame, frame, Size(10,10) );
 			//erode(frame, frame, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)) );
 			//dilate(frame, frame, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)) );
@@ -72,10 +73,17 @@ int main( int argc, char** argv ) {
 			dilate(colorDetection, colorDetection, getStructuringElement(MORPH_ELLIPSE, Size(20, 50)) );
 			dilate(colorDetection, colorDetection, getStructuringElement(MORPH_ELLIPSE, Size(20, 50)) );
 			
-			//Canny( frame2, frame, 3, 3*2, 3 );
-			//findContours( frame, frame, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+			int jeden, dwa, trzy, cztery;
+				jeden = 15;
+				dwa = 13;
+				trzy = 20;
+				cztery = 3;
+			Canny( colorDetection, colorDetection, jeden, dwa * trzy, cztery ); // Tworzenie konturu
+			vector<vector<Point> > contours;
+			findContours( colorDetection, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);	
+			drawContours( colorDetection, contours, 0, Scalar(255,0,0),5,8);
 			imshow ("Wspaniała galeria zdjęć", colorDetection);
-			imshow ("Testowe", mirror);
+			//imshow ("Testowe", mirror);
 		}
 		else
 			break;
