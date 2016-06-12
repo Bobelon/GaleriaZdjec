@@ -2,36 +2,78 @@
 #include <dirent.h>
 #include <opencv2/opencv.hpp>
 
+#include <opencv2/highgui/highgui.hpp>
+#include <list>
+#include <vector>
+
 using namespace cv;
 using namespace std;
 
-/* Funkcja files zapożyczona z 
- * http://cpp0x.pl/artykuly/?id=53
- * */
+list <string> listOfImages;
+list<string>::iterator iter;
+
+
 void files (const char * dirPath ) {
+	
     struct dirent * file;
     DIR * path;
-    char str [100] = "Test";
+    
     
     char *rozszezenie = (char *) malloc (1024 * sizeof (char));
 	char *pom = (char *) malloc (1024 * sizeof (char));
+	
     
     if (path = opendir (dirPath)) {
         while (file = readdir (path)) {
 			pom = strchr (file->d_name,'.');
-			cout << file->d_name << endl;
+			listOfImages.push_back (file->d_name);
 			//strcpy (rozszezenie, pom);
 			/*
 			if (strcpy (rozszezenie, "jpg") || strcpy (rozszezenie, "png")) {
 				cout << file->d_name << endl;
 			}*/
 		}
-             //puts (file -> d_name);
        
         closedir( path );
     }
-    else
-         cout << "Nieprawidlowa sciezka" << endl;
+    
+    else {
+		cout << "Nieprawidlowa sciezka" << endl;
+	}
+}
+
+void showPicture (bool next) {
+	
+	
+	//cout << "\n\n\nXXDXDXDDD\n\n\n\n";
+	if (next) {
+		iter++;
+		if (iter == listOfImages.end()) {
+			iter = listOfImages.begin();
+		} 
+	}
+	else {
+		if (iter == listOfImages.begin()) {
+			iter = listOfImages.end();
+		}
+		iter--;
+	}
+	
+	
+	
+	Mat imageCL;
+	string name = "./CL/" + *iter;
+	
+	imageCL = imread (name, CV_LOAD_IMAGE_COLOR);
+	
+	if (!imageCL.data) {
+		cout << "BŁĄD" << endl;
+		cout << name << endl;
+	}
+	else {
+	cout << "showPicture" << endl;
+	imshow ("CL", imageCL);
+}
 }
 
 int main( int argc, char** argv ) {
@@ -44,10 +86,27 @@ int main( int argc, char** argv ) {
 			//( clock () - begin_time ) /  CLOCKS_PER_SEC;
 
 	
-	files (".");
+	files ("./CL");
 	
+	namedWindow ("CL", CV_WINDOW_AUTOSIZE);
+	
+	
+	iter = listOfImages.begin();
+	
+	//cout << *iter << endl;
+	//cout << *++iter << endl;
+	//wskaznik++;
+	//for (it = listOfImages.begin(); it != listOfImages.end(); ++it) {
+	//	cout << *it << endl;
+	//}
+	//cout << "Ilość znalezionych plików: " << listOfImages.front() << endl;
+	//cout << "Ilość znalezionych plików: " << (listOfImages.front() + 1) << endl;
+	
+	//string imageName = *iter;
+	
+	//namedWindow (*iter, CV_WINDOW_AUTOSIZE);
 	namedWindow ("Wspaniała galeria zdjęć", CV_WINDOW_AUTOSIZE); // Tworzenie nowego okna
-	//namedWindow ("Testowe",  CV_WINDOW_AUTOSIZE);
+	namedWindow ("Testowe",  CV_WINDOW_AUTOSIZE);
 	VideoCapture cap(0);
 	
 	// Błąd dostępu do kamerki
@@ -122,13 +181,17 @@ int main( int argc, char** argv ) {
 					}					
 					if ((x < 250) && (((double) (clock () - aktualnyCzas) / CLOCKS_PER_SEC) >= 0.5)) {
 						cout << "LEWO" << endl;
+						//imshow (*iter, imread (*iter, CV_LOAD_IMAGE_COLOR));
 						pozPocz = x;
 						aktualnyCzas = clock();
+						showPicture(false);
 					}
 					if ((x > 250) && (((double) (clock () - aktualnyCzas) / CLOCKS_PER_SEC) >= 0.5)) {
 						cout << "PRAWO" << endl;
 						pozPocz = x;
 						aktualnyCzas = clock();
+						
+						showPicture(true);
 					}
 			
 			
@@ -145,7 +208,7 @@ int main( int argc, char** argv ) {
 			//circle( colorDetection, mc, sqrt(contourArea(contours[maxI])), Scalar(255,0,0) );
 		}
 		
-		
+			
 			
 			imshow ("Wspaniała galeria zdjęć", colorDetection);
 			imshow ("Testowe", mirror);
