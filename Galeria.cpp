@@ -10,6 +10,7 @@ using namespace std;
 
 list <string> listOfImages;
 list<string>::iterator iter;
+string name;
 
 // Tworzenie listy zdjęć
 void files (const char * dirPath ) {
@@ -67,7 +68,7 @@ void showPicture (bool next) {
 		iter--;
 	}
 	
-	Mat image = imread ("./CL/" + *iter, CV_LOAD_IMAGE_COLOR);
+	Mat image = imread (name + *iter, CV_LOAD_IMAGE_COLOR);
 	
 	if (image.data) {
 		imshow (*iter, image);
@@ -82,8 +83,10 @@ int main( int argc, char** argv ) {
 	double fps;
 	clock_t currentTime = clock() / CLOCKS_PER_SEC;
 
-	if (argc > 1)
+	if (argc > 1) {
 		files (argv[1]);
+		name = argv[1];
+	}
 	else
 		files ("./CL");	
 	
