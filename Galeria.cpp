@@ -104,7 +104,7 @@ int main( int argc, char** argv ) {
 	if (!cap.isOpened())
 		return -1;
 		
-	
+	/*
 	int iLowH = 0;
 	int iHighH = 255;
 
@@ -124,7 +124,7 @@ int main( int argc, char** argv ) {
 
 	cvCreateTrackbar("LowV", "Control", &iLowV, 255); //Value (0 - 255)
 	cvCreateTrackbar("HighV", "Control", &iHighV, 255);
-	
+	*/
 	
 	// Pobieranie parametrów obrazka
 	width = cap.get (CV_CAP_PROP_FRAME_WIDTH);
@@ -146,8 +146,8 @@ int main( int argc, char** argv ) {
 			//blur( bgr, bgr, Size(10,10) );
 			cvtColor( bgr, hsv, CV_BGR2HSV); // filtr zmieniający skalę barw
 			flip(hsv, mirror, 1); // Odbicie lustrzane
-			inRange(mirror, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), colorDetection); //Threshold the image
-			//inRange (mirror, Scalar (60, 200, 130), Scalar (100, 255, 255), colorDetection); // znajdowanie koloru
+			//inRange(mirror, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), colorDetection); //Threshold the image
+			inRange (mirror, Scalar (60, 200, 130), Scalar (100, 255, 255), colorDetection); // znajdowanie koloru
 			/*
 			dilate(colorDetection, colorDetection, getStructuringElement(MORPH_ELLIPSE, Size(20, 20)) );
 			erode(colorDetection, colorDetection, getStructuringElement(MORPH_ELLIPSE, Size(20, 20)) );
@@ -184,15 +184,27 @@ int main( int argc, char** argv ) {
 				int x, y;
 					x = mu[maxI].m10/mu[maxI].m00;
 					y = mu[maxI].m01/mu[maxI].m00;
+					
+				float time, distance;
+					distance = abs ((width / 2) - x);
+					
+					if (distance != 0) {
+						time = 50 / distance;
+					}
+					else {
+						time = 10;
+					}
+				
+					cout << ( (double)(clock () - currentTime) / CLOCKS_PER_SEC) << "  ::  " << time <<  endl;
 				
 				// Kolejne lub poprzednie zdjęcie
-				if ((x < width / 2) && (((double) (clock () - currentTime) / CLOCKS_PER_SEC) >= 0.8)) {
+				if ((x < width / 2) && ((double)( (clock () - currentTime) / CLOCKS_PER_SEC) >= time)) {
 					currentTime = clock();
-					//showPicture(false);
+					showPicture(false);
 				}
-				else if ((x > width / 2) && (((double) (clock () - currentTime) / CLOCKS_PER_SEC) >= 0.8)) {
+				else if ((x > width / 2) && (((double) (clock () - currentTime) / CLOCKS_PER_SEC) >= time)) {
 					currentTime = clock();						
-					//showPicture(true);
+					showPicture(true);
 				}			
 			
 				mc = Point2f( x , y );
@@ -208,10 +220,10 @@ int main( int argc, char** argv ) {
 			
 			namedWindow ("Kształt", CV_WINDOW_AUTOSIZE); // Tworzenie nowego okna
 			imshow ("Kształt", colorDetection);
-			
+			/*
 			namedWindow ("BGR",  CV_WINDOW_AUTOSIZE);			
 			imshow ("BGR", mirror);
-			
+			*/
 		}
 		else
 			break;
